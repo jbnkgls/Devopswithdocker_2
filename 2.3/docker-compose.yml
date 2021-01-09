@@ -1,0 +1,19 @@
+version : "3.8"
+
+services:
+  backend-ex:
+      build: 
+        context: ./
+        dockerfile: Dockerfile_b
+      environment: 
+        - FRONT_URL=http://localhost:5000
+      ports: 
+        - 8000:8000
+  frontend-ex:
+      build:
+        context: ./
+        dockerfile: Dockerfile_b
+      environment: 
+        - API_URL=http://localhost:8000
+      ports:
+        - 5000:5000
