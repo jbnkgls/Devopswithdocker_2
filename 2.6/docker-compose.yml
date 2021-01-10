@@ -1,0 +1,41 @@
+
+version : "3.8"
+
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=a
+      - POSTGRES_DB=postgres
+
+  redis:
+    image: redis
+    ports:
+      - 6379
+
+  backend-ex:
+      build: 
+        context: ./
+        dockerfile: Dockerfile_b
+      environment: 
+        - REDIS=redis
+        - FRONT_URL=http://localhost:5000
+        - DB_HOST=db
+        - DB_USERNAME=user
+        - DB_PASSWORD=a
+        - DB_NAME=postgres
+      ports: 
+        - 8000:8000
+      depends_on:
+      - redis
+      - db
+  frontend-ex:
+      build:
+        context: ./
+        dockerfile: Dockerfile_f
+      environment: 
+        - API_URL=http://localhost:8000
+      ports:
+        - 5000:5000
