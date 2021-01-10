@@ -1,0 +1,42 @@
+version : "3.8"
+
+services:
+  redis:
+    image: redis
+    ports:
+      - 6379
+
+  backend-ex:
+      build: 
+        context: ./ml-kurkkumopo-backend
+        dockerfile: ./Dockerfile
+      environment: 
+        - REDIS=redis
+        - FRONT_URL=http://localhost:3000
+      ports:
+        - 5000:5000
+      volumes:
+        - models:/src/model
+
+  frontend-ex:
+      build:
+        context: ./ml-kurkkumopo-frontend
+        dockerfile: ./Dockerfile
+      environment: 
+        - API_URL=http://localhost:5000
+      ports:
+        - 3000:3000
+
+  training:
+    build:
+      context: ./ml-kurkkumopo-training
+      dockerfile: ./Dockerfile
+    volumes:
+      - imgs:/src/imgs
+      - models:/src/model
+      - data:/src/data
+
+volumes:
+  imgs:
+  models:
+  data:
